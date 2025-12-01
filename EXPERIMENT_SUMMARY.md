@@ -408,7 +408,7 @@ warnings.filterwarnings('ignore', message='symmetry is not provided')
 
 ```bash
 # 1. Set up environment
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 
 # 2. Run serial computation
 python compute_grid_serial.py

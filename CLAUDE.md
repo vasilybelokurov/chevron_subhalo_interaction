@@ -79,7 +79,7 @@
 
 ```bash
 # Activate venv (macOS/Linux)
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 
 # Run a script
 python path/to/script.py --help
@@ -137,7 +137,7 @@ Format: BibTeX with DOI/arXiv/ADS URLs
 
 ## 12) Project memory (customize as needed)
 
-- Preferred env: Python; reproducibility and tests are important. **Default venv activation:** `source ~/Work/venvs/.venv/bin/activate`.
+- Preferred env: Python; reproducibility and tests are important. **Default venv activation:** `source .venv/bin/activate`.
 - Preferred tone: concise, technical, and direct.
 
 ## 13) My bespoke “basic approach”

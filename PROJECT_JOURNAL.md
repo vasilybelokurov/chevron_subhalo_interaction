@@ -234,7 +234,7 @@ Overall: PASS - All arrays identical
 
 **Environment:**
 - macOS Darwin 24.6.0
-- Virtual environment: `~/Work/venvs/.venv`
+- Virtual environment: `.venv`
 
 ---
 
@@ -339,7 +339,7 @@ RuntimeWarning: symmetry is not provided, some methods will not be available
 
 ```bash
 # Activate virtual environment
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 
 # Run serial computation
 python compute_grid_serial.py

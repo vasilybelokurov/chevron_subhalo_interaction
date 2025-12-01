@@ -44,8 +44,8 @@ chevron_subhalo_interaction/
 
 ```bash
 # Python 3.13+ with virtual environment
-python3 -m venv ~/Work/venvs/.venv
-source ~/Work/venvs/.venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 
 # Install required packages
 pip install numpy scipy matplotlib agama tqdm
@@ -55,7 +55,7 @@ pip install numpy scipy matplotlib agama tqdm
 
 ```bash
 # Activate environment
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 
 # Serial computation (150 cells, ~2 minutes)
 python compute_grid_serial.py
@@ -425,7 +425,7 @@ velocity_list = np.linspace(0.0, 100.0, 7)
 
 **Solution:**
 ```bash
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 pip install agama
 ```
 

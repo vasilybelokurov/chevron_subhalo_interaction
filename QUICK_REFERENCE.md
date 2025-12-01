@@ -8,19 +8,19 @@
 
 ### Run Serial Computation (150 cells, ~2 minutes)
 ```bash
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 python compute_grid_serial.py
 ```
 
 ### Run Parallel Computation (150 cells, ~15 seconds)
 ```bash
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 python compute_grid_parallel.py
 ```
 
 ### Validate Results
 ```bash
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 python compare_grids.py
 ```
 
@@ -143,7 +143,7 @@ ModuleNotFoundError: No module named 'agama'
 ```
 **Solution:**
 ```bash
-source ~/Work/venvs/.venv/bin/activate
+source .venv/bin/activate
 pip install agama numpy scipy matplotlib tqdm
 ```
 
