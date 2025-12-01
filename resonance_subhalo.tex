@@ -1,0 +1,923 @@
+% mnras_template.tex 
+%
+% LaTeX template for creating an MNRAS paper
+%
+% v3.3 released April 2024
+% (version numbers match those of mnras.cls)
+%
+% Copyright (C) Royal Astronomical Society 2015
+% Authors:
+% Keith T. Smith (Royal Astronomical Society)
+
+% Change log
+%
+% v3.3 April 2024
+%   Updated \pubyear to print the current year automatically
+% v3.2 July 2023
+%	Updated guidance on use of amssymb package
+% v3.0 May 2015
+%    Renamed to match the new package name
+%    Version number matches mnras.cls
+%    A few minor tweaks to wording
+% v1.0 September 2013
+%    Beta testing only - never publicly released
+%    First version: a simple (ish) template for creating an MNRAS paper
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Basic setup. Most papers should leave these options alone.
+\documentclass[fleqn,usenatbib]{mnras}
+
+% MNRAS is set in Times font. If you don't have this installed (most LaTeX
+% installations will be fine) or prefer the old Computer Modern fonts, comment
+% out the following line
+\usepackage{newtxtext,newtxmath}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows.meta, positioning, calc, angles, quotes, math, intersections, fillbetween, decorations.markings}
+\DeclareMathOperator{\erf}{\rm{erf}} % Declare the error function
+% Depending on your LaTeX fonts installation, you might get better results with one of these:
+%\usepackage{mathptmx}
+%\usepackage{txfonts}
+
+% Use vector fonts, so it zooms properly in on-screen viewing software
+% Don't change these lines unless you know what you are doing
+\usepackage[T1]{fontenc}
+
+% Allow "Thomas van Noord" and "Simon de Laguarde" and alike to be sorted by "N" and "L" etc. in the bibliography.
+% Write the name in the bibliography as "\VAN{Noord}{Van}{van} Noord, Thomas"
+\DeclareRobustCommand{\VAN}[3]{#2}
+\let\VANthebibliography\thebibliography
+\def\thebibliography{\DeclareRobustCommand{\VAN}[3]{##3}\VANthebibliography}
+
+
+%%%%% AUTHORS - PLACE YOUR OWN PACKAGES HERE %%%%%
+
+% Only include extra packages if you really need them. Avoid using amssymb if newtxmath is enabled, as these packages can cause conflicts. newtxmatch covers the same math symbols while producing a consistent Times New Roman font. Common packages are:
+\usepackage{graphicx}	% Including figure files
+\usepackage{amsmath}	% Advanced maths commands
+\usepackage{bm}
+\usepackage{multirow}
+
+% for orcid
+\usepackage{scalerel,tikz}
+\usetikzlibrary{svg.path}
+\definecolor{orcidlogocol}{HTML}{A6CE39}
+\tikzset{orcidlogo/.pic={
+ \fill[orcidlogocol] svg{M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z};
+ \fill[white] svg{M86.3,186.2H70.9V79.1h15.4v48.4V186.2z}
+ svg{M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z}
+ svg{M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1C84.2,46.7,88.7,51.3,88.7,56.8z};
+}}
+\newcommand\orcidicon[1]{\href{https://orcid.org/#1}{\mbox{\scalerel*{
+\begin{tikzpicture}[yscale=-1,transform shape]
+\pic{orcidlogo};
+\end{tikzpicture}
+}{|}}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% AUTHORS - PLACE YOUR OWN COMMANDS HERE %%%%%
+
+% Please keep new commands to a minimum, and use \newcommand not \def to avoid
+% overwriting existing commands. Example:
+%\newcommand{\pcm}{\,cm$^{-2}$}	% per cm-squared
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%% TITLE PAGE %%%%%%%%%%%%%%%%%%%
+
+
+% Title of the paper, and the short title which is used in the headers.
+% Keep the title short and informative.
+\title[]{The diffusion of Galactic bar resonances by dark matter subhaloes}
+
+% The list of authors, and the short list which is used in the headers.
+% If you need two or more lines of authors, add an extra line using \newauthor
+\author[E. Y. Davies et al.]{Elliot Y. Davies~\orcidicon{0000-0001-5996-4072}$^{1}$\thanks{E-mail: eydavies@mit.edu}, Adam M. Dillamore~\orcidicon{0000-0003-0807-5261}$^{2}$ and Vasily Belokurov~\orcidicon{0000-0002-0038-9584}$^{3}$.
+\\
+% List of institutions
+$^{1}$MIT Kavli Institute For Astrophysics and Space Research, 70 Vassar St, Cambridge, MA 02139, USA \\
+$^{2}$Department of Physics and Astronomy, University College London, London, WC1E 6BT, UK \\
+$^{3}$Institute of Astronomy, University of Cambridge, Madingley Road, Cambridge CB3 0HA, UK
+}
+% These dates will be filled out by the publisher
+\date{Accepted XXX. Received YYY; in original form ZZZ}
+
+% Prints the current year, for the copyright statements etc. To achieve a fixed year, replace the expression with a number. 
+\pubyear{\the\year{}}
+
+% Don't change these lines
+\begin{document}
+\label{firstpage}
+\pagerange{\pageref{firstpage}--\pageref{lastpage}}
+\maketitle
+
+% Abstract of the paper
+\begin{abstract}
+We introduce a new framework for probing the Galactic subhalo population, adding to the Milky Way's near-field cosmology toolbox. Namely, we propose the utilisation of stars trapped in resonance with the Galactic bar as probes of dark matter subhaloes. For any star in resonance, there exists some width in action space for which it can remain in resonance. A passing subhalo may impart a change in action, causing a formerly resonant star to begin rotating out of resonance with the bar. By approximating subhalo passages as impulses, and aggregating their impact as a diffusive process, we analytically estimate the sensitivity of the co-rotation resonance to the Galactic subhalo background. Ultimately, we derive an analytic expression for the diffusion timescale $t_{\rm diff}$ of trapped stars subject to a subhalo background. This allows us to consider the implications of the existence (or non-existence) of stars trapped in the co-rotation resonance for the predicted Galactic subhalo population. We find that the co-rotation resonance is likely insensitive to subhaloes below $M~<10^7$~M$_{\odot}$. Conversely, the Milky Way's subhalo population above $M~>10^8$~M$_{\odot}$ could plausibly have already dispersed the co-rotation resonance and therefore hints at a local suppression of subhaloes above $M~>~10^8$~M$_{\odot}$ of around $1/3$ what is expected from the CDM subhalo mass function. This method is very likely to provide stronger constraints on the subhalo population when higher order resonances are taken into account.
+\end{abstract}
+
+% Select between one and six entries from the list of approved keywords.
+% Don't make up new ones.
+\begin{keywords}
+Galaxy: kinematics and dynamics -- Galaxy: centre -- (cosmology:) dark matter
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%% BODY OF PAPER %%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+As the enigma of dark matter's nature endures, the astrophysics community persistently turns to the Milky Way’s resources as a means of inquiry. The most accepted classification for the particle identity of dark matter -- the so-called \textit{cold} dark matter (CDM) model -- predicts a hierarchical structure of \textit{subhaloes} contained within the larger dark matter halo of any Milky Way sized galaxy \citep[e.g.][]{blumenthal1984formation, white1991galaxy}. In the CDM framework, these haloes-within-haloes are theorized to have masses as large as a dwarf galaxy, or as small as the Earth. While the presence of dark matter haloes in Galactic dwarf galaxies (such as the LMC, Fornax and Sculptor) is now incontrovertible, there has yet to be confident detection of any subhalo on the lower end of the mass-spectrum. Detection of subhaloes below $M \lesssim 10^8$ M$_{\odot}$ are crucial for discerning whether the actual population of Galactic subhaloes deviates from CDM expectations; alternative dark matter models predict a suppression at the lower end of the mass-spectrum \citep[e.g.][]{schneider2013halo, lovell2014properties, kulkarni2022what}. However, it is at these lower masses where subhaloes struggle to maintain a bound stellar population, and thus chart invisible trajectories through the Galaxy \citep[][]{read2017stellar, jethwa2018upper, nadler2020milky, kravtsov2022grumpy}. Therefore, the challenge to the community is to measure perturbations to the stellar material in the Galaxy from these low-mass, non-luminous subhaloes as a means of indirect detection.
+
+The utility of the Milky Way as a probe of dark matter (or other cosmological phenomena) is commonly referred to as ``near-field cosmology''. One of the now canonical examples of a resource in the near-field cosmology toolbox is the use of cold stellar streams \citep[][]{ibata2002uncovering, johnston2002how}. These elongated stellar features are the last stage of evolution of a globular cluster undergoing tidal disruption. Their wide spatial extent yet narrow velocity dispersion ($\sigma \lesssim 1$ km/s) means that impacts by low mass subhaloes leave a persistent mark on their spatial distribution, colloquially called ``gaps'' \citep[][]{carlberg2009star, erkal2015forensics, erkal2015properties}. The evolution of a stream on a well-modelled orbit, after impact from a subhalo, is very well understood. Moreover, in the case of the stream GD-1, the impact from a low-mass subhalo may have already been detected \citep[][]{bonaca2019spur, nibauer2025measurement}. The difficulty that the stream-subhalo method now faces is the inherent messy, non-equilibrium state of the Milky Way's potential. The non-axisymmetry of the global potential \citep[][]{han2022stellar, han2022tilt, dillamore2025geometry}, as well as non-dark interactions from Giant Molecular Clouds \citep[e.g.][]{amorisco2016gaps, pearson2017gaps} are very difficult to disentangle from possible impacts with low mass subhaloes. To get a bound on the low-mass Galactic subhalo population, it may be easier to take a wider approach \citep[e.g.][]{davies2023ironing, forouhar2025accreted}, rather than looking for interactions on a case-by-case basis. To complement searches for the imprint of individual subhaloes on streams, it is important (yet theoretically and numerically difficult) to explore the global heating of stellar debris from the entire population of low mass subhaloes. The difficulty in numerical modelling is made clear by \citet[][]{ludlow2023spurious}. Moreover, \citet[][]{penarrubia2019stochastic} discusses the important of small perturbers in relevant contexts, noting the challenges of modelling the evolution of any gravitating system embedded in a very lumpy medium.
+
+Stellar streams are often viewed as isolated subhalo detectors; the current zeitgeist is to examine one stream at a time for the influence of a single (or a few) subhaloes \citep[e.g.][]{bonaca2019spur}. However, over a hundred stellar streams have now been found scattered across the Milky Way's halo, forming a tapestry of Galactic dark matter detectors \citep[][]{belokurov2006field, mateu2023galstreams, bonaca2024stellar}. This ensemble of streams could plausibly allow a characterisation of what may be termed the Galactic subhalo background, by some measure of baseline heating (i.e. velocity dispersion) across the entire stream population. While the simulation of large numbers of low mass subhaloes is costly, tools such as StreamSculptor \citep[][]{nibauer2025streamsculptor} make this kind of study more tractable.
+
+This work argues that a currently under-utilised resource in near-field cosmology is the Galactic bar. Despite the difficulty of mapping the inner Galaxy, it is extremely likely that the Milky Way has a bar. Evidence for a Galactic bar comes from gas kinematics \citep[][]{peters1975models, binney1991understanding}, near-infrared emission \citep[][]{blitz1991direct}, and stellar kinematics \citep[][]{howard2009kinematics, shen2010milky, debattista2017separation}. While the properties of the bar are yet to be pinned-down exactly, its radial length has been measured to be around $3.5$ kpc \citep[e.g.][]{lucey2022constraining} and its pattern speed $\Omega_p$ is estimated to be around $35 - 40$ kpc km/s \citep[][and references therein]{shen2020bar}. A critical consequence of a non-axisymmetric contribution to the potential is the presence of resonances, i.e. regions where stellar orbital frequencies are commensurate with the bar’s rotation \citep[e.g.][]{lynden-bell1972generating, lynden-bell1979mechanism, kalnajs1991pattern, sellwood2010recent}. These resonances trap stars, reshape their orbits, and imprint coherent structures in phase space. Resonances such as the co-rotation, inner, and outer Lindblad resonances are thought to shape a number of observed structures in the Milky Way disk. This includes the Hercules moving group \citep[][]{dehnen1998distribution, dehnen2000effect} and other kinematic ridges found more recently in \textit{Gaia} data \citep[e.g.][]{antoja2018dynamically, trick2019galactic}.
+
+While it has been long established that the bar at the centre of the Milky Way imparts resonant features in the disk, it has been shown that this effect may be responsible for observed kinematic overdensities in the Galactic halo \citep[][]{moreno2015resonant, dillamore2023stellar, dillamore2024radial}. Consequently, bar-induced resonant features are likely to interact with the dark matter halo. Understanding this link between the Milky Way’s dark matter halo and the Galactic bar is crucial, as angular-momentum exchange between these components impacts both the evolution of the bar and the response of the inner halo. For example, it has been shown that the dynamical friction from the halo causes the bar to slow down \citep[e.g.][]{chiba2022oscillating}. However, the consideration of gas complicates this picture and may prevent any significant decrease in the pattern speed \citep[][]{beane2023stellar}.
+
+In this context of growing literature on the link between the dark content of the Galaxy and the bar, we propose a new method for probing the Galactic subhalo background with the resonant features induced by the bar itself. Simply put, if the bar creates resonant feature in the halo, the Galactic subhalo background may leave an imprint on these features. Such an imprint would be either the complete dissolution of an expected resonant population, enhanced velocity dispersion of a resonance, or perhaps an overpopulation of higher order resonances due to heating of lower order resonances. This work seeks to show whether or not this is a viable method by means of an analytical model and test particle simulations. 
+
+The outline of this work is as follows. In Sec.~\ref{sec:mathe_background} we detail the mathematical background behind bar resonances and the impact of subhaloes. In Sec.~\ref{sec:simulations} we detail the test particle simulations we conduct and show some results that illustrate the visual and kinematic impact a subhalo may have on a star in resonance. In Sec.~\ref{sec:discussion}, we present and discuss the results of applying the work in the previous two sections. Lastly, we summarise this document and consider future work in Sec.~\ref{sec:summary}
+
+\section{Analytical model}\label{sec:mathe_background}
+
+In this section, we review the necessary mathematical background to understand the resonant behaviour resulting from the bar, and the impact that subhaloes have on these stars in trapped resonance. In this first paper, we focus entirely on circular orbits in this work and leave halo-like orbits for future work. For other resources that cover the relevant resonant dynamics thoroughly, see the works of \citet[][]{chiba2021resonance}, \citet[][]{chiba2022oscillating} and \citet[][]{hamilton2023galactic}.
+
+\subsection{Galactic model}
+
+Throughout this work we take the potential to comprise two components. Namely, we describe the Milky Way using a cored logarithmic potential,
+%
+\begin{equation}\label{logarithmic}
+    \Phi_0(r) = \frac{v_0^2}{2}\log(r_{\rm core}^2 + r^2),
+\end{equation}
+%
+which is then perturbed by a bar potential, with pattern speed $\Omega_p$, of the form
+%
+\begin{equation}\label{eq:bar_potential}
+    \delta \Phi(r, \varphi, t) = \Phi_{\rm b}(r)\cos[2(\varphi - \Omega_pt)],
+\end{equation}
+%
+where the radial component is
+%
+\begin{equation}\label{bar_radial}
+    \Phi_b(r) = -\frac{Av_0^2}{2}\frac{r^2}{(r + r_{\rm b})^5}.
+\end{equation}
+%
+Here $v_0$ is the velocity of the rotation curve (in the limit of $r\gg r_{\rm core}$) in the logarithmic potential in Eq.~(\ref{logarithmic}), $r_{\rm b}$ is the scale length of the of the bar (not equivalent to the actual length), and the coefficient $A$ is the ratio of the azimuthal force due to the bar and the radial force due to the unperturbed potential at the radius of co-rotation $r=r_{\rm CR}$:
+%
+\begin{equation}
+    A \equiv \frac{\left|\frac{1}{r}\frac{d\Phi_b}{d\varphi}\right|_{r_{\rm CR}}}{\left| \frac{d\Phi_0}{dr}\right|_{r_{\rm CR}}},
+\end{equation}
+%
+where the co-rotation radius is the distance from the Galactic centre where a star rotates at the same angular speed of the bar i.e. where $v_{\rm circ}(r) = r \, \Omega_p$. Altogether, this implies a Hamiltonian of the form
+%
+\begin{equation}\label{hamiltonian}
+    H = \frac{1}{2}|\bm{v}|^2 + \Phi_0 + \delta \Phi = H_0 + \delta \Phi,
+\end{equation}
+
+\subsection{Action-angle variables}
+
+For any integrable Hamiltonian $H(\bm{q}, \bm{p})$ that is a function of generalised coordinates $(\bm{q}, \bm{p})$, we can perform a canonical transformation to rewrite the Hamiltonian in terms of a set of useful integrals of motions called \textit{actions} $\bm{J}$ and their conjugate coordinates known as \textit{angles} $\bm{\theta}$ which evolve linearly in time. Hamilton's equations in these coordinates are
+%
+\begin{equation}
+    \dot{\bm{J}} = - \frac{\partial H}{\partial \bm{\theta}} =0 , \:\:\: \dot{\bm{\theta}} = \frac{\partial H}{\partial \bm{J}} = \bm{\Omega}(\bm{J}).
+\end{equation}
+%
+Where $\bm{\Omega} = \dot{\bm{\theta}}$ are the frequencies associated with the coordinates. The actions are defined by integrating the generalised coordinates via
+%
+\begin{equation}\label{definition_action}
+    J_i = \frac{1}{2\pi}\oint p_i dq_i,
+\end{equation}
+%
+These coordinates are especially useful in the context of studying the orbits in the Milky Way with a rotating central bar, as in the Hamiltonian in Eq.~({\ref{hamiltonian}}). 
+
+\subsection{Resonance Hamiltonian}
+
+A \textit{resonance} with the Galactic bar occurs when an integer combination of these orbital frequencies $\bm{\Omega}$ is commensurate with the rotation frequency (or ``pattern speed'') of the bar $\Omega_p$:
+%
+\begin{equation}\label{res_condition_omega}
+    \bm{n}\cdot\bm{\Omega} = m\Omega_p,
+\end{equation}
+%
+where $\bm{n} \in \mathbb{Z}^3$, and $m$ is the azimuthal harmonic of the bar taken to be $m=2$ throughout this work. The unperturbed Hamiltonian $H_0$ describing the Milky Way (where the bar is treated as a perturbation) permits action-angle coordinates in the radial direction, azimuthal and vertical directions. We label the angles as $\bm{\theta} = (\theta_r, \theta_{\varphi}, \theta_z)$ and the actions as $\bm{J}=(J_r, L_z, J_z)$. The corresponding frequencies are thus $\Omega(\bm{J}) = (\Omega_r, \Omega_{\varphi}, \Omega_z)$. However, in the context of studying resonant orbits of the bar, it is convenient to define the \textit{slow frequency}, 
+%
+\begin{equation}
+    \Omega_{\rm slow} \equiv \bm{n}\cdot\bm{\Omega} - m\Omega_p
+\end{equation}
+%
+which is evidently $\Omega_{\rm slow} \approx 0$ near resonance. The time integral of the slow frequency is the slow angle (i.e. the phase of star relative to the bar):
+%
+\begin{align}
+    \phi &= \bm{n}\cdot\bm{\theta} - m\Omega_pt \nonumber \\ 
+    &= n_r\theta_r + n_{\varphi}\theta_{\varphi} - m\Omega_pt,
+\end{align}
+%
+where we have set $\bm{n} = (n_r,n_{\varphi},0)$ because the logarithmic potential and bar component are primarily acting in the radial and azimuthal directions, hence the vertical motion will not strongly couple to the bar.  By appropriate choice of some \textit{fast angle} $\tilde{\phi}$ we can make a canonical transformation from the spherical coordinate action-angles $(\bm{\theta}, \bm{J})$ to some ``fast and slow'' action-angles $(\bm{\theta}', \bm{J}')$, where $\bm{\theta}' = (\phi, \tilde{\phi})$ are the slow and fast angles and $\bm{J}'=(I,\tilde{I})$ are the slow and fast actions. We define the fast angle to be equal to the radial action $\theta_r$. We can find these new canonical actions $\bm{J}'$ from
+%
+\begin{equation}
+    \bm{J} = \frac{\partial S}{\partial \bm{\theta}}, \:\:\: \bm{\theta}' = \frac{\partial S}{\partial \bm{J}'}
+\end{equation}
+%
+for a canonical transformation with a generating function $S$, where the new Hamiltonian is given by
+%
+\begin{equation}
+    \bar{H}(\bm{\theta}', \bm{J}', t) = H(\bm{\theta}, \bm{J}, t) + \frac{\partial S}{\partial t},
+\end{equation}
+%
+and the simplest generating function $S$ is
+%
+\begin{equation}
+    S(\bm{\theta} , \bm{J}', t) = \left[n_r\theta_r + n_{\varphi}\theta_{\varphi} - m\Omega_p t\right]I + \theta_r\tilde{I}.
+\end{equation}
+%
+The conjugate action to this slow angle is the \textit{slow action} (i.e. how far the star’s frequencies deviate from perfect commensurability with the bar's pattern speed) can be found using the generating function:
+%
+\begin{equation}
+    J_{\varphi} = \frac{\partial S}{\partial \theta_{\varphi}} = n_{\varphi}I.
+\end{equation}
+%
+Since $L_z = J_{\varphi}$ and to be in resonance we require $m = n_{\varphi}$,
+%
+\begin{align}
+    I = L_z / m.
+\end{align}
+%
+Using the equation for the new Hamiltonian, and expanding the perturbation in Fourier series with coefficients $\Psi_k (\bm{J}', t)$, we can show that,
+%
+\begin{equation}
+    \bar{H}(\bm{\theta}', \bm{J}', t) = H_0(\bm{J}') + \sum_{\bm k} \Psi_{\bm k} (\bm{J}', t)\exp{(i\bm{k}\cdot\bm{\theta}')} - m\Omega_pI.
+\end{equation}
+%
+As is done by \citep[][]{hamilton2023galactic}, we subsequently average over the fast motion, and Taylor expand for small $I$ near the resonance $I_{\rm res}$. Averaging over the fast angle results in a new Hamiltonian:
+%
+\begin{equation}
+    \mathcal{H} = H_0(I) + 2\sum_{k} \Psi_{(0,k)}(I) \exp (ik\phi) - m\Omega_pI.
+\end{equation}
+%
+It is convenient to define a shifted version of the slow angle $\upphi$ such that $\upphi \in (-\pi,\pi)$:
+%
+\begin{equation}
+    \upphi = \phi + \frac{\arg \Psi_{(0,k)}}{k}.
+\end{equation}
+%
+However, as shown by \citet[][]{chiba2022oscillating}, only the $k=1$ term contributes for resonances where $n_{\varphi} = 2$. 
+%
+This ultimately results in the pendulum Hamiltonian  $\mathcal{H}$ for resonant motion (ignoring higher order terms and constants):
+%
+\begin{equation}\label{eq:resonance_hamiltonian}
+    \mathcal{H} = \frac{1}{2}\alpha(I-I_{\rm res})^2 - \epsilon\cos(\upphi)
+\end{equation}
+%
+The resulting resonance Hamiltonian is evidently only a function of the slow angle $\phi$ and the slow action $I$, where the coefficient $\alpha$ is given by
+%
+\begin{equation}
+    \alpha = \frac{\partial^2 H_0}{\partial I^2} \bigg\rvert_{I_{\rm res}},
+\end{equation}
+%
+and the coefficient $\epsilon$ is given by
+%
+\begin{equation}
+    \epsilon = 2|\Psi_{(0,1)}(I)| = |\Phi_b(r_{\rm res})|,
+\end{equation}
+%
+where the second equality is valid for the co-rotation resonance when $J_r \rightarrow 0$, as shown by \citet[][Appendix B]{chiba2021resonance}. The contours of Eq.~\ref{eq:resonance_hamiltonian} can be seen in Fig.~\ref{fig:separatrix}. The dashed black lines show the separatrix -- the transition point from one behaviour to another -- between librating orbits and circulating orbits. The black point in the centre shows the exact resonance $(I,\phi) = (I_{\rm res},0)$, and the red arrow shows the half width in slow action $\Delta I_{\rm half}$. The blacked solid lines show examples of librating and circulating orbits.
+
+
+We can use Hamilton's equations to rewrite $\alpha$ in a more practical form:
+%
+\begin{equation}
+    \alpha = \frac{\partial\bm{(\bm{n}\cdot\Omega})}{\partial I}\bigg\rvert_{I_{\rm res}}.
+\end{equation}
+%
+In a logarithmic potential (for circular orbits at $r \gg r_{\rm core}$), where $\Omega_r = \sqrt{2}v_0^2/L_z$ and $\Omega_{\varphi}=v_0^2/L_z$ are functions of $L_z$ only, we can write $\alpha$ as (keeping the fast action $\tilde{I}$ constant),
+%
+\begin{equation}\label{alpha}
+    \alpha = \frac{\partial}{\partial(L_z/m)}\left(n_{\varphi}\Omega_{\varphi} + n_r\Omega_r\right) = -m(n_{\varphi}+n_r\sqrt{2})\frac{v_0^2}{L_z^2}.
+\end{equation}
+%
+This expression is only exact for the co-rotation resonance $(n_r=0)$ in our toy model, however, we use it as a rough estimate of the relative widths of nearby resonances (see Table~\ref{tab:resonances}). A fully consistent treatment for $n_r \neq 0$, in which the slow action mixes $J_r$ and $J_{\varphi}$ is given in \citet[][Appendix C]{chiba2022oscillating}. For $r\gg r_{\rm core}$ the radius of the resonance is related to the bar pattern speed and flat rotation curve velocity $v_0$ by,
+%
+\begin{equation}\label{eq:res_radius}
+    r_{\rm res}(n_r,n_{\varphi}) = \frac{v_0}{\Omega_p}\left(1+\frac{n_r}{n_{\varphi}}\sqrt{2}\right),  
+\end{equation}
+%
+which is found from Eq.~(\ref{res_condition_omega}), and the definition for $\Omega_{\varphi}(R) = v_0 / R$ in a logarithmic potential for circular orbits.
+
+\subsection{Resonance separatrix}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/separatrix.pdf}
+    \caption{Sketch of the contours of the bar resonance Hamiltonian (Eq.~\ref{eq:resonance_hamiltonian}) shown in the slow angle $\upphi$ and slow action $I$ space. The central point is the location of the parent orbit, exactly in resonance. The inner black point is an example libration orbit around the resonance. The black dashed line is the separatrix between resonant and rotating orbits. The red arrow indicates the change in slow action $I$ required to kick the parent orbit beyond the separatrix.}
+    \label{fig:separatrix}
+\end{figure}
+
+A ``family'' of resonant orbits trapped at a given $n_r\!:\!n_{\varphi}$ resonance consists of one closed, periodic \emph{parent orbit} and a surrounding collection of \emph{librating orbits}. The parent orbit closes in the frame co-rotating with the bar’s pattern speed after completing $n_r$ azimuthal revolutions and $n_{\varphi}$ radial oscillations, forming the backbone of the resonance. In this rotating frame, the parent orbit maintains a constant slow angle $\upphi$ and lies close to the $n_r\!:\!n_{\varphi}$ resonance line in action space. For example, the aforementioned co-rotation corresponds to $(n_{\varphi},n_r)=(2,0)$, whereas the outer Lindblad resonance (OLR) corresponds to $(n_{\varphi},n_r)=(2,1)$. Higher order resonances appear at larger radii and are progressively weaker, but they can still influence stellar phase-space structure.
+
+The librating orbits represent stars that are nearly, but not exactly, on this parent trajectory. Their motion remains phase locked to the bar, so that their slow angle $\upphi$ oscillates gently around the parent orbit’s value. In action space, this corresponds to oscillations about the resonant slow action $I_{\rm res}$. Each librating orbit differs mainly by the amplitude of this slow oscillation, whose range of values increases with the strength of the bar. The largest such orbit marks the edge of the resonant region beyond which stars are no longer trapped and their phases drift freely with respect to the bar (i.e. the separatrix).
+
+This structure can be visualized in Fig.~\ref{fig:separatrix}, where contours of constant energy are plotted in the space of slow angle~$\upphi$ and slow action~$I$. In this diagram, the black solid line closed loops around the stable equilibrium point correspond to the librating orbits that remain trapped in resonance, while the black solid line open contours represent circulating orbits whose phases drift relative to the bar. The black dashed line marks the separatrix. Stars inside the separatrix move coherently with the bar’s pattern whereas for those outside, the influence of the bar is averaged out over their orbit. 
+
+The equations of motion for the slow angle and slow action can be obtained by Hamilton's equations:
+%
+\begin{equation}
+    \dot{\upphi} = \frac{\partial \mathcal{H}}{\partial I} = \alpha(I-I_{\rm res}) \Rightarrow\ddot{\upphi}=\alpha\dot{I},
+\end{equation}
+%
+where $\dot{I}$ is given by the other equation,
+%
+\begin{equation}
+    \dot{I}=-\frac{\partial \mathcal{H}}{\partial \upphi}=-\epsilon\sin\phi,
+\end{equation}
+%
+The resulting equation of motion for the slow angle in the regime of small oscillations around resonance is
+%
+\begin{equation}
+    \ddot{\upphi} + \alpha \epsilon\upphi = 0,
+\end{equation}
+%
+taking $\upphi$ as small to utilise $\sin \upphi \sim \upphi$. As a reminder, $\upphi$ is actually shifted from the slow angle by $\pi$. From this equation of motion we can read off the libration frequency $\omega_{\rm lib}$ and libration timescale $\tau_{\rm lib}$ as
+%
+\begin{equation}
+    \tau_{\rm lib} = \frac{2\pi}{\omega_{\rm lib}} = \frac{2\pi}{\sqrt{|\alpha\epsilon}|}. 
+\end{equation}
+%
+The equilibrium points of the resonance Hamiltonian $\mathcal{H}$ are at the points where the derivates of the resonance hamiltonian with respect to both coordinates $I$ and $\upphi$ are zero, which are at $(I,\phi) = (I_{\rm res}, 0)$ and $(I,\phi) = (I_{\rm res}, \pi)$. Using these equilibrium points, we can find the width at which the separatrix ``half-width'' is greatest, i.e. the maximum of $|I-I_{\rm res}|$ over $\upphi$. Evaluating the resonance Hamiltonian at $\mathcal{H} = \pm \epsilon$, and rearranging for the slow action results in an equation describing the separatrix boundary:
+%
+\begin{equation}
+    I(\upphi) = I_{\rm res} \pm \sqrt{\frac{4\epsilon}{|\alpha|}}|\cos(\upphi/2)|
+\end{equation}
+%
+From this we get the half width:
+%
+\begin{equation}
+    \Delta I_{\rm half} \equiv \max_{\phi} |I-I_{\rm res}| = \sqrt{\frac{4\epsilon}{|\alpha|}}.
+\end{equation}
+%
+Therefore, if the parent orbit is moved in action space by an amount $\Delta I_{\rm half}$, it will be ejected from resonance. We can use Eq.~(\ref{epsilon}) and Eq.~(\ref{alpha}) to evaluate $\Delta I_{\rm half}$ for any resonance and any bar properties. Evidently, this neglects any kind of restoring force that would be effectively add a multiplicative factor to this half-width. In the case of one subhalo, such a restoring force acts on much longer timescales and therefore is a justifiable assumption. This is likely not true for many subhaloes. In Table.~\ref{tab:resonances} we show the value of a range of half-widths for a few different resonances for comparison with the co-rotation resonance. As well as the aforementioned co-rotation and Outer Lindblad resonance, we show the values for the ($n_{\varphi}=2$ and $n_r=-2$) and the ($n_{\varphi}=2$ and $n_r=-3$) resonance. Neglecting any other effects, the resonance widths in this table imply stars trapped in higher-order resonances should be more sensitive to perturbation by a given subhalo. However, when factoring in the true population of subhaloes at different Galactic radii, higher order resonances may reside in less perturbative environments.
+
+
+\begin{table}
+\centering
+\caption{Comparison of higher order resonance widths $\Delta I_{\rm half}$ in units of the co-rotation resonance half-width, $\Delta I_{\rm CR}$ (for different bar speeds). The resonances are listed in order of increasing radius from the center of the galaxy. The units of $\Omega_p$ are in kpc km/s.}
+\begin{tabular}{|c|ccc|}
+\hline
+\multirow{2}{*}{Resonance ($n_{\varphi}=m=2$)} & \multicolumn{3}{c|}{$\Delta I_{\rm half} \,[\Delta I_{\rm CR}]$}                  \\ \cline{2-4} 
+                           & \multicolumn{1}{|c|}{$\Omega_p = 35$} & \multicolumn{1}{c|}{$\Omega_p = 40$} & $\Omega_p = 45$ \\ \hline\hline
+Co-rotation ($n_r=0$)                & \multicolumn{1}{c|}{$1.00$}          & \multicolumn{1}{c|}{$1.00$}          & $1.00$          \\ \hline
+Outer Lindblad ($n_r=1$)             & \multicolumn{1}{c|}{$0.72$}          & \multicolumn{1}{c|}{$0.75$}          & $0.76$          \\ \hline
+1:1 resonance ($n_r=2$)      & \multicolumn{1}{c|}{$0.56$}          & \multicolumn{1}{c|}{$0.58$}          & $0.60$          \\ \hline
+3:2 resonance ($n_r=3$)                 & \multicolumn{1}{c|}{$0.46$}          & \multicolumn{1}{c|}{$0.48$}          & $0.50$          \\ \hline
+\end{tabular}
+\label{tab:resonances}
+\end{table}
+
+\subsection{Subhalo impulse}
+
+Now we know the required action to remove the parent orbit from resonance, if we calculate the amount of action imparted by a subhalo of a certain mass on a star in a resonant orbit then we have condition for ejecting a star from resonance as a function of subhalo properties. Once scaled for a \textit{population} of subhaloes, assuming some subhalo mass function (SHMF), we may explore what regions of subhalo parameter space impart enough change in action to eject a star from its resonance.
+
+If we assume that the forces of the subhalo act on timescales much smaller than the orbital time scale of the resonant star, then we can apply the impulse approximation,
+%
+\begin{equation}\label{eq:impulse}
+    \Delta \bm{v} = \int_{-\infty}^{\infty}\bm{a}(t)dt,
+\end{equation}
+%
+where the change in the star's velocity $\Delta \bm{v}$ is simply the integral over the gravitational force on the star from the subhalo $\bm{a} = -\nabla \phi$. Throughout this work we model any subhaloes by a Plummer sphere of mass $M$ with scale radius $r_{\rm s}$. The form of the potential for a Plummer sphere is
+%
+\begin{equation}
+    \Phi_P(r) = -\frac{GM}{\sqrt{r^2 + r_{\rm s}^2}}.
+\end{equation}
+%
+While stars on resonances can be found throughout the halo at a variety of orientations, we simplify this work by assuming the resonant star's orbit is confined to the x-y plane. At the time of interaction with the subhalo we approximate the star as moving in a straight line in the $y$-direction with velocity $\bm{v} = (0, v_*, 0)$, with the Galactic centre along the negative $x$-direction. We set the subhalo on a arbitrary trajectory, with velocity $\bm{w} = (w_x, w_y, w_z)$, and define the time of closest approach at $t=0$. The distance of closest approach (i.e. the impact parameter) is defined to occur at $\bm{b} = (b_x, b_y, b_z)$, and therefore has magnitude $b = \sqrt{b_x^2 + b_y^2 + b_z^2}$. We know that the relative position vector of the two objects is $\bm{r}(t) = (b_x+w_xt, b_y + (w_y - v_*)t, b_z+w_zt)$ and the relative velocity is $\bm{u} = (w_x, w_y-v_*,w_z)$ with magnitude $u = \sqrt{w_x^2+ (w_y-v_*)^2 + w_z^2}$. Using the equation for the Plummer sphere, we know the gravitational force exerted on the star is given by
+%
+\begin{equation}\label{eq:force_plummer}
+    \bm{a}(t) = -GM\frac{\bm{r}(t)}{(|\bm{r}(t)|^2 + r_{\rm s}^2)^{3/2}}.
+\end{equation}
+%
+By integrating Eq.~(\ref{eq:impulse}), we get the usual expression for the change in velocity of the resonant star as a result of the subhalo fly-by:
+%
+\begin{equation}
+    \Delta \bm{v} = \frac{2GM}{u} \frac{\bm{b}}{(b^2 + r_{\rm s}^2)}.
+\end{equation}
+%
+This final velocity impulse can be approximately converted to an action impulse by considering the relationship between the slow action and the spherical coordinate actions. In the case of the slow action, we only need to consider the azimuthal action (i.e. the z-component angular momentum). Namely, $I = L_z / m$ and thus
+%
+\begin{equation}
+    \Delta I = \Delta L_z / m.
+\end{equation}
+%
+The shape of the of the separatrix boundary and parent orbits suggests that for the maximum impulse, we could consider $\Delta I$ to be dominated by $\Delta L_z$. We recognise also that, from the definition of actions in Eq.~(\ref{definition_action}), we can relate the magnitude of impulse velocity to the impulse in angular momentum $L_z$ by
+%
+\begin{equation}
+     \Delta L_z =(\bm{r} \times \Delta\bm{v})_z = r \, \Delta v_{\varphi},
+\end{equation}
+%
+Plugging in for $\Delta v_{\varphi} = \Delta \bm{v}\cdot\bm{e}_{\varphi}$ and $\Delta L_z$, we get
+%
+\begin{equation}
+     \Delta I_{\rm sh}= \frac{r}{m} \frac{2GM}{u} \frac{b_{\varphi}}{(b^2 + r_{\rm s}^2)}
+\end{equation}
+%
+as the expression for the action impulse for an encounter between a subhalo of mass $M$ for a star on an orbit with some characteristic radius radius $r$. We typically take $r$ as the radius of the resonance $r_{\rm res}$ as given by Eq.~(\ref{eq:res_radius}). 
+
+\subsection{Subhalo diffusion}\label{sec:many_subhaloes}
+
+For understanding the impact of subhaloes on resonant stars, it is appropriate to use the Fokker-Planck approximation. Namely, we can capture the impact of many low-mass subhaloes by their diffusion of the resonance stars distribution function $f(\bm{J'},t)$. In the Fokker-Planck approximation (in terms of actions), the full evolution of the distribution function is governed
+%
+\begin{equation}
+    \frac{\partial f}{\partial t} = -\sum_i \frac{\partial}{\partial J'_i}\Bigl\{ D_if\Bigl\} + \sum_{ij} \frac{\partial^2}{\partial J'_i \partial J'_j}\Bigl\{D_{ij} f\Bigl\},
+\end{equation}
+%
+which is analogous to the diffusion equation with (orbit averaged) drift coefficients $D_i$ and (orbit averaged) diffusion coefficients $D_{ij}$. These coefficients describe the systematic drift and growth of variance of the actions, respectively. Critically for our context, escape from resonance depends only on whether the resonant star's slow action diffuses across the separatrix. Moreover, we consider the subhaloes as an isotropic distribution of perturbers. Together, these conditions simplify the Fokker-Planck equation to \citep[][]{hamilton2023galactic},
+%
+\begin{equation}
+    \frac{\partial f}{\partial t} + \{f,\mathcal{H}\}=   \frac{\partial^2}{\partial I^2}(D_{II} f ),
+\end{equation}
+%
+with slow-action diffusion coefficient $D_{II}$ that relates to the change in slow action by one perturber $\Delta I_{\rm sh}$ via
+%
+\begin{equation}\label{eq:D_definition}
+    D_{II} = \lim_{t\rightarrow0}\frac{\langle\Delta I_{\rm sh}^2\rangle}{2\Delta t} = \frac{1}{2}\int d\Gamma 
+    \langle\Delta I_{\rm sh}^2\rangle,
+\end{equation}
+%
+for a subhalo differential encounter rate $d\Gamma$, and mean square slow-action kick $\langle\Delta I_{\rm sh}^2\rangle$. The timescale for a particle in a bath of subhaloes to diffuse across the full resonance (i.e. twice the half width $\Delta I_{\rm half}$) is then given by,
+%
+\begin{equation}\label{eq:t_diff}
+    t_{\rm diff} = \frac{(2\Delta I_{\rm half})^2}{2D_{II}} = (2\Delta I_{\rm half})^2 \left[\int d\Gamma \langle\Delta I_{\rm sh}^2\rangle\right]^{-1}.
+\end{equation}
+%
+Similarly, the rms change in the slow action from a process with diffusion coefficient $D_{II}$ (after a total time $t$) is
+%
+\begin{equation}\label{eq:total_I}
+    \Delta I_{\rm rms}(t) = \sqrt{2 D_{II} t}
+\end{equation}
+%
+The diffusion timescale $t_{\rm diff}$ is sensitive to both the potential of the individual subhaloes (through $\Delta I_{\rm sh}$) and their population properties (through $d\Gamma$), allowing us to theoretically probe different dark matter models in few different ways. In the context of using resonant features as a probe of dark matter content of the Milky Way, we are interested in situations where the diffusion timescale is shorter than the lifetime of the resonant feature (or by proxy, the age of the Galactic bar $t_{\rm age}$). If $t_{\rm diff} < t_{\rm age}$, then the resonant feature should not exist under the assumption that no new stars are captured. Additionally, an understanding of the rate of change of the dispersion of the stars in the resonance would allow one to put constraints on the subhalo populations by comparison to the observed width of the resonance. However, this is beyond the scope of this work and likely not yet possible from a data perspective.
+%
+For a population of subhaloes with local spatial number density per unit mass $dn / dM$ (i.e. $(dn/dM)dM$ is the number density of subhaloes in the mass interval $M\rightarrow M+dM$) and a subhalo velocity distribution $f(\bm{w})$, the differential encounter rate (in the resonant star's reference frame) can be written as
+%
+\begin{equation}
+    d\Gamma = \frac{dn}{dM} \, dM \, f(\bm{w}) d^3\bm{w} \, u \, (2\pi b\, db),
+    \label{eq:dGamma}
+\end{equation}
+%
+where $2\pi b\,db$ represents the ring-shaped area element in impact-parameter space, and $u$ is the relative speed of the star and subhaloes. 
+
+\subsubsection{Subhalo velocity distribution}
+
+Here we could choose the velocity distribution of dark matter subhaloes in the inertial frame to be an isotropic Maxwellian distribution with velocity dispersion $\sigma$:
+%
+\begin{equation}\label{eq:f_velocity}
+    f(\bm{w}) = \left(\frac{1}{2\pi \sigma^2}\right)^{3/2} \exp{\left( -\frac{w^2}{2\sigma^2}\right)}.
+\end{equation} 
+%
+Because this is the distribution of velocities in the inertial frame, we need to account for the shift from the velocity of the resonance star $\bm{v} = (0,v_*,0)$. Because $\bm{w} = \bm{u} - \bm{v}$, the change of intergation variables is simply $d^3\bm{w} \rightarrow d^3\bm{u}$. Rewriting the distribution in terms of the relative velocity, and integrating over the angles, gives us the speed distribution (see Appendix~\ref{appendix:velocity} for details),
+%
+\begin{equation}
+    f(u) = \frac{u}{\sigma v_*\sqrt{2\pi}} \left[ \exp \left(\frac{-(u^2 - v_*^2)}{2\sigma^2}\right) - \exp \left(\frac{-(u^2 + v_*^2)}{2\sigma^2}\right) \right].
+\end{equation}
+
+
+\subsubsection{Impact parameter distribution}
+
+In an isotropic 3D distribution, each component of $\bm{b}$ has equal variance, enabling us to take the average $\langle b_{\varphi}^2\rangle = b^2/3$. However, since the subhalo velocity distribution is not isotropic in 3D in the star's rest frame, but instead is only isotropic in the 2D encounter plane, this factor needs to be corrected.
+
+We previously found the impact parameter in the azimuthal direction by simply taking $b_{\varphi} = \bm{b}\cdot\bm{e}_{\varphi}$, where $\bm{e}_{\varphi}$ is the unit vector in the direction of the kick. To account for the movement of the star, we decompose the unit vector into the parts parallel and perpendicular to the star's relative velocity unit vector $\bm{\hat{u}}$:
+%
+\begin{equation}
+    \bm{e}_{\varphi} = (\bm{e}_{\varphi}\cdot\bm{\hat{u}})\bm{\hat{u}} + \bm{e}_{\varphi,\perp}
+\end{equation}
+%
+where $\bm{e}_{\varphi,\perp} \cdot \bm{\hat{u}} = 0$, and $|\bm{e}_{\varphi, \perp}|^2 = 1 - (\bm{e}_{\varphi} \cdot \bm{\hat{u}})^2$. Altogether, with the 2D encounter plane isotropy, the azimuthimal impact parameter conditioned on the star's relative velocity $\bm{u}$ is:
+%
+\begin{equation}
+    \langle b_{\varphi}^2 | \bm{u}\rangle = \frac{b^2}{2} \left(1 - (\bm{e}_{\varphi} \cdot \bm{\hat{u}})^2\right).
+\end{equation}
+%
+We subsequently average over all possible relative velocity directions $\bm{u}$, under some assumption about the distribution of $\bm{\hat{u}}$. A good way to describe a distribution of vectors with a preferred direction is the Fisher distribution \citep[][]{fisher1953dispersion}:
+%
+\begin{equation}
+    f_{\bm{\hat{u}}}(\bm{\hat{u}}) = \frac{\xi}{4\pi\sinh\xi}\exp\left(\xi\,\bm{e}_{\varphi}\cdot\bm{\hat{u}}\right),
+\end{equation}
+%
+where $\xi = uv_*/\sigma^2$. Integrating over this distribution ultimately results in a relative velocity dependent impact parameter (see Appendix~\ref{appendix:impact} for details):
+%
+\begin{equation}
+    \langle b_{\varphi}^2 | \bm{u}\rangle =b^2 \left[\frac{\coth(\xi)}{\xi} - \frac{1}{\xi^2}\right]
+\end{equation}
+%
+We can write this in a more compact form:
+%
+\begin{equation}
+    \langle b_{\varphi}^2 | \bm{u}\rangle = b^2 \lambda(u)
+\end{equation}
+%
+where the correction factor $\lambda$ is only a function of the relative velocity $u$, since we fix the subhalo dispersion $\sigma$ and the stars velocity $v_* = v_0$. In the limit of $v_*\rightarrow0$, $\lambda(u)\rightarrow1/3$ and so we recover the original isotropic assumption.
+
+\subsubsection{Subhalo number distribution}
+
+The local subhalo number density $dn / dM$ describes the number of subhaloes per unit volume and per unit mass interval at the location of interest (e.g. near co-rotation). It is related to the subhalo mass function $dN / dM$—which gives the total number of subhaloes per unit mass within the host halo—through the normalised radial distribution of subhaloes $P(r)$:
+%
+\begin{equation}
+    \frac{dn(r)}{dM} = \frac{dN}{dM} \, P(r),
+    \label{eq:dn_dM_relation}
+\end{equation}
+%
+where $P(r)$ is given by \citep[][]{springel2008aquarius}
+%
+\begin{equation}
+    P(r) \propto \exp \left(-\frac{2}{\alpha}\left(\left(\frac{r}{r_{-2}}\right)^{\alpha} - 1\right)\right),
+\end{equation}
+%
+normalized such that $\smallint P(r) \, 4\pi r^2 \, dr = 1$, where $\alpha = 0.678$ and $r_{-2} = 0.81 r_{200}$. 
+
+\subsubsection{Diffusion coefficient}
+
+To compute the diffusion coefficient, we need the differential encounter rate $d\Gamma$ and the mean square slow-action kick $\langle(\Delta I)^2\rangle$. For practical purposes the differential encounter rate is written as
+%
+\begin{equation}
+    d\Gamma = P(r_{\rm CR})\frac{dN}{dM}dM \, f(u) du\, u \, (2\pi b\,db),
+\end{equation}
+%
+and the mean squared slow-action kick is
+%
+\begin{equation}
+     \langle(\Delta I_{\rm sh})^2 \rangle= \left(\frac{r}{m}\right)^2 \left(\frac{2GM}{u}\right)^2 \frac{\langle b_{\varphi}^2 | \bm{u}\rangle}{(b^2 + r_{\rm s}^2)^2},
+\end{equation}
+%
+In the integral over the impact parameter, we choose $b_{\rm max}$ to be the virial radius of the Milky Way, $r_{\rm 200} = 210$ kpc. The scale radius of a Plummer sphere can be found from it's mass by \citep[][]{diemand2008clumps, erkal2016number}
+%
+\begin{equation}\label{eq:scale_radius}
+    r_{\rm s}(M) = 1.62 {\,\rm kpc} \left(\frac{M}{10^8 {\rm M}_{\odot}}\right)^{1/2}
+\end{equation}
+%
+To perform the integral in Eq.~(\ref{eq:D_definition}), we separate the integral over impact parameter $b$ and relative velocity $u$ into parameters $\mathcal{B}$ and $\mathcal{V}$ respectively. The integral over the impact parameters is given by,
+%
+\begin{align}
+    \mathcal{B}(M) &= \int^{b_{\max}}_{0} \ \frac{2b^3}{\left(b^2 + r_{\rm s}^2\right)^2} db\\
+    &= 
+    \ln\left(
+    \frac{b_{\max}^{2}+r_{\rm s}^{2}}{r_{\rm s}^2}
+    \right)
+    +
+    \frac{r_{\rm s}^2}{b_{\max}^{2}+r_{\rm s}^{2}}
+    - 1
+\end{align}
+%
+This can be simplified since $b_{\max}^2 \gg r_s^2$ for all values of $M$:
+%
+\begin{equation}
+    \mathcal{B}(M) \approx \ln\left(\frac{b_{\max}^2}{r_s^2}\right) -1.
+\end{equation}
+%
+Using Eq.~(\ref{eq:scale_radius}), and defining $\kappa = 1.62^2 \times 10^{-8}$, we can express $\mathcal{B}$ as:
+%
+\begin{equation}
+    \mathcal{B}(M) = \mathcal{B}_{\rm P} -\ln(M), 
+\end{equation}
+%
+where $\mathcal{B}_{\rm P} = \ln(b_{\max}^2 / \kappa) - 1 = 27.15$. We have denoted this constant with a subscript P to indicate that it's value is specific to the Plummer sphere potential. This value changes if we assume a new potential (and therefore a new $r_s - M$ relation). We discuss the case of a Hernquist potential in the Appendix.
+
+Separating out the parts of the differential interaction rate that rely only on the velocity, we find that the parameter $\mathcal{V}$ is given by,
+%
+\begin{equation}
+    \mathcal{V}(v_*;\sigma) = \int^{\infty}_{0} \lambda(u)f(u) u^{-1} du,
+\end{equation}
+%
+For the case of an isotropic distribution impact parameter distribution $(\lambda = 1/3)$, this is has a well established result \citep[][]{chandrasekhar1943dynamical, rosenbluth1957fokker, spitzer1987}:
+%
+\begin{equation}
+    \mathcal{V}(v_*;\sigma)^{(\lambda = 1/3)} = \frac{1}{v_*}\erf\left(\frac{v_*}{\sqrt{2}\sigma}\right),
+\end{equation}
+%
+where $\erf$ is the error function. In the limit of $v_* \ll \sigma$ this reduces to $\mathcal{V} \rightarrow \sqrt{2/(\pi\sigma^2)}$, while in the limit of $v_* \gg \sigma$ this becomes $\mathcal{V} \rightarrow 1/v_*$. However, because of the factor $\lambda(u)$, we will need to integrate $\mathcal{V}$ numerically.
+
+Plugging in all the relevant expressions to Eq.~\ref{eq:D_definition} we get, 
+%
+\begin{equation}\label{eq:diffusion}
+    D_{II} = 2\pi\left(\frac{r_{\rm CR}G}{m}\right)^2P(r_{\rm CR}) \times \mathcal{V}(v_*; \sigma) \times \mathcal{I}(M),
+\end{equation}
+%
+where the integral $\mathcal{I}(M)$ is given by 
+%
+\begin{equation}
+        \mathcal{I}(M) =\int_{M_{\rm min}}^{M} \frac{dN}{dM'}M'\,^2\mathcal{B}(M')\,dM'.
+\end{equation}
+%
+The integrals $\mathcal{I}$ and $\mathcal{V}$ are solved using the scipy \texttt{quad} function. A major caveat of this diffusion framework is that there are other processes that contribute to diffusion such as the interstellar medium.
+
+\subsubsection{Dark matter description}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/dark_matter_properties.pdf}
+    \caption{Subhalo population properties used in the analytical diffusion model. The top panel shows the subhalo mass function (SHMF) $dN/dM$ for three different dark matter models. The orange line shows the SHMF for CDM, the cyan and magenta line shows CDM-suppressed models which approximate a WDM model. The suppressed models simply reduce the amount of subhaloes at lower massses. The bottom panel shows the radial distribution of subhaloes $P(r)$, and the position of the co-rotation radius. Both the SHMF and $P(r)$ are taken from simulation Aq-A-1 in Aquarius suite \citep[][]{springel2008aquarius}.}
+    \label{fig:dm_properties}
+\end{figure}
+
+The sensitivity to different dark matter models appears only through the diffusion coefficient $D_{II}$ (or equivalently the diffusion timescale $t_{\rm diff}$). Specifically, different models of dark matter will produce different forms of the SHMF, $dN/dM$. Alternatively, models such as self-interacting dark matter, which have little impact on the SHMF, present their impact through the relationship between the scale radius and mass (contained in $\mathcal{B}$). From cosmological simulations \citep[][]{springel2008aquarius}, the SHMF has been shown to take the form 
+%
+\begin{equation}\label{eq:shmf}
+    \frac{dN}{dM} = a_0 \left( \frac{M}{m_0} \right)^{-\alpha_{\rm DM}} \times \mathcal{S}(M),
+\end{equation}
+%
+with some mass-dependent suppression factor $S(M)$ for models varying from CDM. Throughout this work we take the values of the parameters in Eq.~(\ref{eq:shmf}) to be $a_0 = 3.26\times10^{-5}$ M$_{\odot}^{-1}$, $m_0 = 2.25 \times 10^7$ M$_{\odot}$, and $\alpha_{\rm DM}=1.9$. We choose to take a typical form:
+%
+\begin{equation}
+    \mathcal{S}(M) = \left(1 + \frac{M_{\rm t}}{M}\right)^{-1},
+\end{equation}
+%
+where the transition mass $M_{\rm t}$ sets the subhalo number supression relative to CDM. We can link the suppression mass to the mass of the particle. Introducing this parameter modifies the integral $\mathcal{I}(M)$ to become:
+%
+\begin{equation}
+        \mathcal{I}(M) =\int_{M_{\rm min}}^{M} \frac{dN}{dM'}M'\,^2\mathcal{B}(M')\,\mathcal{S}(M')\,dM'.
+\end{equation}
+%
+In the top panel of Fig.~\ref{fig:dm_properties} we show the corresponding $dN/d\log M$ for the subhalo mass functions described by Eq.~\ref{eq:shmf} for various values of $M_t$. The orange line shows the CDM SHMF, with parameters chosen from the Aquarius simulations. The dashed cyan line and the dotted magenta line show the SHMF modified with a cut-off mass of $10^6$ M$_{\odot}$ and $10^7$ M$_{\odot}$ respectively, to the emulate suppression resulting from a warm dark matter particle. In the bottom panel of Fig.~\ref{fig:dm_properties} we show the radial distribution of subhaloes $P(r)$, whose value at $r=r_{\rm CR}$ is used to calculate the subhalo number density at the co-rotation resonance for calculation of the diffusion coefficient. 
+
+\section{Simulation}\label{sec:simulations}
+
+In this section we conduct a series of test particle simulations that emulate a dark matter subhalo impacting a star in co-rotation resonance with a bar potential that resembles the Milky Way's bar. All of the simulations are produced using Agama \citep[][]{vasiliev2019agama}.
+
+Moreover, it is insightful to know whether the analytic impulse model gives us a realistic sense of the viability of this method. Given the limitations of impulse approximation, we use these simulations to understand the level to which our analytical model either under predicts and or over predicts the change in action imparted by a subhalo. Crucially, the impulse $\Delta \bm{v}$ does not take into account the presence of the bar, and the test particle simulation does. 
+
+\subsection{Simulation set-up}
+
+Here we describe the individual components of the simulation, which consist of a host potential, a test particle representing a star in resonance with a bar, and a dark matter subhalo on a pre-determined trajectory.
+
+\subsubsection{Host potential}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/resonance_potential.pdf}
+    \caption{An example orbit (black line) in co-rotation resonance with the bar. The bar's major axis is aligned with the $x$-axis, and the equipotential lines are shown in magenta.}
+    \label{fig:resonance}
+\end{figure}
+
+The potential of the host galaxy is kept simple, and consists of just two components: a cored logarithmic halo potential (as described by Eq.~\ref{logarithmic}) with $v_0 = 230$ km/s and $r_{\rm core} = 0.1$ kpc, and a bar potential. The bar potential is of the form described by Eq~\ref{eq:bar_potential}, with pattern speed $\Omega_p = 35$ kpc km/s, strength $A=0.02$, and scale length $r_b = 1.6$ kpc. Additionally, there is vertical component to give the bar a finite height:
+
+\begin{equation}
+    \delta \Phi(r, \varphi, t) \rightarrow \delta \Phi(r, \varphi, t)\exp\left[-\left(z/\sqrt{2} \,z_{\rm b}\right)^2\right],
+\end{equation}
+%
+where $z_{\rm b} = 1$ kpc. In Fig.~\ref{fig:resonance} we present a contour plot showing the equipotential lines (in magenta) of the entire potential used in the test particle simulation, alongside a co-rotation resonant orbit (in black). This figure is in the co-rotating frame. In this plot, the bar's major axis is aligned with the $x$-axis, and we can see that the trajectory of the co-rotation resonance is confined to one side of the bar, as expected. 
+
+\subsubsection{Resonant star}
+
+The resonant star's orbit is generated by satisfying the resonance condition described by Eq.~(\ref{res_condition_omega}), and then setting it on initial position $\bm{x}_* = (0, \, r_{\rm res}, \, 0)$ and velocity $\bm{v}_* = -(0, \, v_{\rm circ}(r_{\rm res})+\varepsilon,\,0)$, where $v_{\rm circ}(r)$ is the circular velocity at in the logarithmic potential and $\varepsilon$ is some small initial offset velocity. Evident from the initial conditions, the star is confined to the $x-y$ plane. In Fig.~\ref{fig:resonance}, the example resonant orbit is chosen with $\varepsilon = 10$ km/s. In every simulation in this work, we integrate the orbit for a total of $8$ Gyrs.
+
+\subsubsection{Dark matter subhalo}
+
+The subhalo is set on pre-determined straight line trajectory in the host (halo plus bar) potential.
+
+The dark matter subhalo consists of a Plummer sphere potential on a pre-computed straight line trajectory such that it crosses the $x-y$ plane half way through its orbit (i.e. at $t=4$ Gyr) with some prescribed impact parameter (i.e. distance of closest approach to the resonant star) of $\bm{b} = (b_x, b_y,0)$. The crossing occurs at a point when the derivative of the slow angle $\dot{\phi}$ is at one of its extrema to ensure the resonant star is ``deepest'' in resonance at the time of subhalo fly-by. 
+
+\subsection{Types of subhalo impact}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/subhalo_flyby_xz.pdf}
+    \caption{Three illustrative orbits (shown in black) that were initially in resonance with the bar and perturbed by different dark matter subhaloes (trajectory shown as a red line). Each plot is in the co-rotating frame of the bar, with the bar's position illustrated by a grey oval. Each column shows a different subhalo impact the same orbit, where the subhalos only differ in their mass (all other properties are held fixed). The leftmost panel shows a subhalo of mass $M=10^9$M$_{\odot}$, which barely impacts the resonant star. The middle panels shows a subhalo of mass $M=10^{10}$M$_{\odot}$, which causes a noticeable change in trajectory but keeps the star on one side of the bar. The rightmost panels shows the impact of a mass $M=10^{11}$M$_{\odot}$ subhalo, which knocks the star out of resonance.}
+    \label{fig:orbits}
+\end{figure*}
+
+Using the test particle simulation, we demonstrate the visual impact of a single subhalo fly-by on a resonant star. In Fig.~\ref{fig:orbits}, we demonstrate three loosely defined ``regimes'' of impact that a subhalo can have on a star in resonance. From left to right, the columns in Fig.~\ref{fig:orbits} show the impact of a $M=10^9$ M$_{\odot}$, $M=10^{10}$ M$_{\odot}$ and $M=10^{11}$ M$_{\odot}$ subhalo on the same trajectory. In each example, the star is on the same co-rotation resonant orbit. The top panels show a side-on view of the galactic plane $(x-z)$, while the bottom panels show a top-down view $(x-y)$. The grey oval in the top-down view shows the location of the bar, and the red line in the side-on view shows the trajectory of the subhalo. We present the entire evolution of the resonant star's orbit. 
+
+In each panel (but most evidently in the top-down view) we can clearly see the orbit of the star before the subhalo fly-by as a crescent-shaped orbit contained between $x=-5$ kpc and $x=5$ kpc. This is the same orbit as in Fig.~\ref{fig:resonance}. As the subhalo approaches the midplane, it visually impacts the orbit in one of three distinct ways. The least interesting case is when the change in the amplitude of oscillations of the slow action is so minimal that the orbit is visually indistinct from the unperturbed case, as in the leftmost panel of Fig.~\ref{fig:orbits}. In the middle panel, we see a case where the star remains in the co-rotation resonance, but the orbit has been heated to the point where the extent of the star's trajectory is noticeably wider. Lastly, as shown in the rightmost panel, the impact from the subhalo can be so dramatic that the star is kicked onto a higher order resonance or out of resonance completely. In this latter case, the presence of stars in the co-rotation resonance could be completely prohibited. 
+
+We present the change in velocity magnitude $\Delta v$ and the change in Jacobi integral $\Delta E_J$, where $E_J = E-\Omega_p L_z$, for the example test particle simulations in Fig.~\ref{fig:change}. The Jacobi integral is the only integral of motion \citep[see §3 in][]{binneyandtremaine2008} in a rotating potential with a bar of pattern speed $\Omega_p$. The two quantities are calculated by comparing the unperturbed trajectory with the subhalo perturbed trajectory at all time steps. The top panel of Fig.~\ref{fig:change} shows that change in velocity magnitude oscillates after the subhalo passage at $t\sim4$ Gyr. This evidently makes the comparison with the impulse case somewhat difficult when using $\Delta v$ (or any other non-integral of motion). Rather than deciding where in the early oscillation to compare with the analytical impulse approximation, we decide to compare the toy model and the simulation using an integral of motion. The bottom panel of Fig.~\ref{fig:change} shows how the change in Jacobi integral changes as a function of time. Using this metric, it is easy to compare the test particle simulation with the analytic case; there is an obvious pre-impact value of the Jacobi integral and an obvious post-impact value of the Jacobi integral.  
+
+\subsection{Comparing with the analytic model}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/deltaEJ_deltaV.pdf}
+    \caption{The change in velocity (top panel) and change in Jacobi integral (bottom panel) for stars impacted by subhaloes. We show three illustrative examples of subhaloes with different mass, on the same trajectory. Since Jacobi integral is constant before and after the subhalo impact (and change in velocity is not), it is used as the metric of comparison between the toy model and the simulation.}
+    \label{fig:change}
+\end{figure}
+
+For the sake of numerical simplicity, we only compare the toy model and the test particle simulation in the case of one perturbing subhalo. We then use the test particle simulation as a ``ground truth'' to explore whether the toy model is under-predicting or over-predicting the impact of subhaloes on the parent resonance orbit. How we define and compare ``impact'' between a simulation and the impulse approximation is not a straightforward question given that neither velocity nor z-angular momentum are integrals of motion in a barred potential. This makes it somewhat difficult to choose over what timescale after subhalo passage to compare the simulated $\Delta v$ or $\Delta L_z$ with the impulse approximated case. To compensate for this, we do compare these parameters in both scenarios, but additionally we compare the change in Jacobi integral. The change in Jacobi integral in the impulse approximation can easily be calculated by remembering that $\Delta \bm{r} = 0$ in this regime:
+
+\begin{align}
+    \Delta E_J &= \Delta E - \Omega_p\Delta L_z \\
+    &= \bm{v}\cdot\Delta\bm{v}\: + \tfrac{1}{2} \, |\Delta \bm{v}|^2 \, - \Omega_p \,  (\bm{r}\times\Delta\bm{v})|_z,
+\end{align}
+
+where $\bm{r}$ and $\bm{v}$ are the position and velocity of the star at the time of fly-by ($t=t_0$) by the subhalo. Since $E_J$ is an integral of motion, we can clearly compare $E_J(t \ll t_0)$ amd $E_J(t\gg t_0)$ as a measure of the impact that the subhalo had on the resonant star.
+
+Using the change in Jacobi integral $\Delta E_J$, we can compare the toy analytic model to the test particle simulation. We run  a grid of simulations across mass, relative velocity and impact parameter to see in what ranges of these parameters the analytic model over predicts or under predicts. In Fig.~\ref{fig:comparison}, we plot the resulting difference of $\Delta E_J$ in the case of the analytical model and the simulation, normalised by $\Delta E_J$ for the simulation. Each panel of Fig.~\ref{fig:comparison} shows the grid of relative velocity $v_{\rm rel}$ against impact parameter $b$ in different mass bins. The blue colour indicates that the toy model is under predicting compared to the simulation, whereas the red colour indicates that the toy model is over predicting. Fig.~\ref{fig:comparison} makes it clear that, using change in Jacobi integral as a comparison metric, the toy model under predicts the impact of a subhalo fly-by for the vast majority of parameter space across masses $M=[10^5,10^9]$. For higher masses, the toy model over predicts in regions where we would expect the impulse approximation to break down: close impact with slow relative velocity. From this, we conclude that stars in resonance with the bar should be more sensitive to ejection by a subhalo for  masses $M=[10^5,10^9]$ than our analytical model predicts.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/deltaEJ_compare.pdf}
+    \caption{The difference between the change in Jacobi integral predicted from the toy model and the simulation. This comparison is only for an impact by one subhalo. We show normalised $\Delta E_J$ in $v_{\rm rel}-b$ space for various subhalo masses. Blue colour indicates an under estimate by the toy analytic model relative to the simulation, whereas red colour indicates an over estimate. We can see that for most of parameter space up to masses of $10^9$ M$_{\odot}$, the toy model underestimates the impact of the subhalo on the resonant star.}
+    \label{fig:comparison}
+\end{figure}
+
+\section{Results \& Discussion}\label{sec:discussion}
+
+In this section we present the implications of the subhalo diffusion coefficient $D_{II}$ (given in Eq.~\ref{eq:diffusion}). We express our results in terms of a few different parameters: (a) the diffusion coefficient itself, (b) a dimensionless diffusion strength $\Delta$, (c) the timescale of diffusion $t_{\rm diff}$, and (d) the total change in slow action $\Delta I$. Additionally, we show how the consequences of the subhalo diffusion change according to varying bar properties and dark matter models.
+
+By the assumption of an isothermal, isotropic spherical halo with an flat rotation curve, we can relate the velocity dispersion to the circular velocity $\sigma \sim v_0/\sqrt{2}$ using Jean's equations. By taking $v_0 = 230$ km/s, it would be reasonable to assume $\sigma \sim 160$ km/s. However, knowing the precise value of the velocity dispersion at the local volume is critical to our method, as it directly scales the diffusion coefficient. Therefore, to take a more conservative estimate, we assume $\sigma =200$ km/s, which is still consistent with both cosmological simulations \citep[e.g.][]{diemand2008clumps} and self-consistent equilibrium modelling \citep[e.g.][]{piffl2015bringing}. We take the maximum impact parameter to be the virial radius of the Milky Way, $b_{\rm max}= 210$ kpc. Wherever bar parameters are not explicitly stated, they can be assumed to be roughly the same as those in \citet[][]{chiba2021resonance}: (a) pattern speed of $\Omega_p = 35$ kpc km/s, (b) a strength of $A=0.02$, and (c) a scale length of $r_{\rm b} = 1.6$ kpc. 
+
+\subsection{Diffusion coefficient}
+
+Here we present the behaviour of the diffusion coefficient, and how it varies as we change the dark matter models. We present both the actual diffusion coefficient $D_{II}$, and also the dimensionless diffusion strength $\Delta$ (introduced by \citet[][]{hamilton2023galactic}).
+
+In Fig.~\ref{fig:diffusion_coefficient}, we present the result of integrating the diffusion coefficient $D_{II}$ up to different values of mass $M$, to obtain the cumulative diffusion coefficient for all subhaloes up to and below mass that mass $M$. In the top panel of Fig.~\ref{fig:diffusion_coefficient}, we show this for three different dark matter models. Specifically, we compute $D_{II}$ for CDM, and two ``warm'' dark matter models, whose SHMF is given by Eq.~\ref{eq:shmf} with cut-off masses of $M=10^6$ M$_{\odot}$ and  $M=10^7$ M$_{\odot}$. As expected, the warm dark matter models have a suppressed $D_{II}$ compare to CDM at lower masses, according to how their respectively SHMFs are suppressed.
+
+Since the meaning behind the values of the diffusion coefficient $D_{II}$ are difficult to interpret physically, we make use of the dimensionless diffusion strength \citep[][]{hamilton2023galactic},
+%
+\begin{equation}
+    \Delta = \frac{4}{\pi}\frac{t_{\rm lib}}{t_{\rm diff}}.
+\end{equation}
+%
+As described by \citet[][]{hamilton2023galactic}, when $\Delta \ll 1$, the diffusion is very weak and the resonant behaviour dominates. Conversely, when $\Delta \gg 1$ the diffusion process dominates and the imprint of any resonance is washed away. For intermediate regimes, where $\Delta \sim 0.1 - 1.0$, the diffusive process is already strong enough to produce noticeable deviations from purely collisionless behaviour. By examination of the bottom panel of Fig.~\ref{fig:diffusion_coefficient}, we could expect to see an imprint from the subhaloes on the resonant features below $M = 10^7$ M$_{\odot}$. Beyond $M \gtrsim 10^7$ M$_{\odot}$, we certaintly expect the diffusive process to dominate. However, once we approach masses close to $M=10^9$ M$_{\odot}$, where the total number of subhaloes in the Galaxy is expected to be be $N<100$, we can probably not rely on the assumption of a diffusive subhalo bath regime to hold. 
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/diffusion_results.pdf}
+    \caption{diffusion coefficient $D_{II}$ (top panel) and dimensionless diffusion strength $\Delta$ (bottom panel) integrated over mass values up to $M$. The subhalo population parameters are chosen to match the three types of $dN/d\log M$ and $P(r)$ shown in Fig.~\ref{fig:dm_properties}.}
+    \label{fig:diffusion_coefficient}
+\end{figure}
+
+\subsection{Timescale of diffusion}
+
+Since the value of the diffusion coefficient itself is difficult to place into a Galactic context, here we express it through different means which are themselves detailed in Sec.~\ref{sec:many_subhaloes}. 
+
+The most intuitive way to understand the impact of the Galactic subhalo population on the stars in resonance with the bar is through the timescale of diffusion. If a population of subhaloes has a diffusion timescale $t_{\rm diff}$ that is shorter than the lifetime of the bar resonance itself, then it is plausible that the resonance should not be able to exist. This obviously requires one to know the lifetime of the bar resonance. We use an estimate for the age of the bar itself as a proxy. 
+
+The diffusion timescale is given in Eq.~(\ref{eq:t_diff}), where we can see that it scales with the inverse of the diffusion coefficient and depends on the bar parameters through the resonance half-width $\Delta I_{\rm half}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/timescale_results.pdf}
+    \caption{Diffusion timescale (top panel) and total change in slow action (bottom panel). The diffusion timescale is calculated assuming bar paramters described earlier, and diffusion coefficient shown in Fig.~\ref{fig:diffusion_coefficient}. The black dashed line in the top panel shows an estimate for the bar age at $t_{\rm age} = 8$ Gyr, which is a proxy for the timescale required to diffuse away the bar resonance. In the bottom panel, the total change in slow action assumes $8$ Gyr of diffusion. The black horizontal lines show the half-width for a variety of bar parameters, and indicate the required value of $\Delta I$ to diffuse away the bar resonance.}
+    \label{fig:timescale}
+\end{figure}
+
+In the top panel of Fig.~\ref{fig:timescale}, we present the cumulative diffusion timescale (integrated from $M_{\rm min}~=~10^5$~M$_{\odot}$ up to $M_{\rm max}~=~M$~M$_{\odot}$) for three different dark matter models. The dashed horizontal line represents the age of the bar $t_{\rm age}$ \citep[e.g.][]{sanders2024epoch} (used as a proxy for the lifetime of the resonance). The range of subhalo masses where $t_{\rm diff}(<M) < t_{\rm age}$ is the region for which the subhaloes would have diffused away the parent orbit of the resonance. The orange line therefore shows two key details for CDM. Firstly, the resonant feature is insensitive to the population of subhaloes up to $M\sim10^7$M$_{\odot}$. Secondly, assuming the diffusive region applies, the population of subhaloes above $M\gtrsim10^7$M$_{\odot}$ could have plausibly diffused the resonance away. Given that the co-rotation resonance has possibly been detected in the stellar halo (and more generally known to exist in the disk), this would imply some level of suppression from CDM at the location of the co-rotation resonance. For the other dark matter models, we see an increase in the diffusion timescale for lower mass subhaloes. This is to be expected, as these models simply reduce the number of subhaloes at these lower masses, which would reduce the diffusion coefficient. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/suppression_constraints.pdf}
+    \caption{The re-scaled diffusion timescale, after changing the density of subhaloes at co-rotation $P(r=r_{\rm CR})$ by different factors. The solid orange line is normal CDM, the dotted magenta line shows CDM scaled down to $1/5$ the normal density, and the dashed turquoise line shows the CDM scaled down to $1/50$ the normal density. These scalings are chosen so that the diffusion timescale does not become shorter than the bar's age for all masses up to $10^8$ M$_{\odot}$ and $10^9$ M$_{\odot}$ respectively. The existence of a bar resonance (assuming an age of $8$ Gyr) should imply some suppression to CDM expectations.}
+    \label{fig:constraints}
+\end{figure}
+
+To understand the level of suppression from CDM predictions, we re-plot the diffusion timescale but with various levels of modification to the subhalo density at the co-rotation resonance $P(r=r_{\rm CR})$. In Fig.~\ref{fig:constraints} we present how the diffusion timescale is shifted when the subhalo density is scaled to be $1/5$ of its CDM value, and $1/50$ of the its CDM value. These modifications cause the diffusion timescale to be closer to the age of the bar for all subhaloes up to M=$10^8$ M$_{\odot}$ and M=$10^9$ M$_{\odot}$ respectively. With it being more likely that the diffusive subhalo bath regime assumption breaks at higher masses, we consider it more reasonable that the existence a stellar population trapped at the co-rotation resonance implies a suppression at the $r=r_{\rm CR}$ up to around $1/5$ of the expected CDM value. This corroborates with the suppression factor of roughly $1/3$ due to tidal disruption by the disk at the solar radii \citep[][]{d'onghia2009substructure, erkal2016number}. The existence a stellar population trapped at the co-rotation resonance therefore provides an independent constraint on the subhalo suppression near the solar volume that is comparable to other works, and can be used as a calibration factor.
+
+\subsection{Impact of bar properties}
+
+As an additional way to understand the impact of the Galactic subhalo bath, we plot the cumulative total change in slow action $\Delta I$ (for all the subhaloes up to mass $M$). Instead of thinking in timescales, we can consider by how much the slow action of a resonant star has changed after a certain time (we take $\Delta t=8$ Gyr). This total change can then be compared to the half-width of the resonance, and it this half width is exceeded, the resonance can be diffused away. The total change in slow action after some time $t$, under diffusion coefficient $D_{II}$, is presented by equation Eq.~(\ref{eq:total_I}). This re-formatting of the diffusion timescale makes it easier to understand how changing the bar properties impacts our result (since $\Delta I$ is not depending on bar properties).
+
+In the bottom panel of Fig.~\ref{fig:timescale}, we plot $\Delta I (<M)$ for the same three dark matter models, and compare this with three different configurations for the bar properties. This plot is intended to present how the half width varies as we tweak the bar properties. The dashed lines show: (a) increasing the pattern speed increases the half-width, (b) increase the bar length decreases the half-width, and (c) increasing the bar strength increases the half-width. As this plot is just a re-formulation of the diffusion timescale result, we see that the middle dashed line shows again that the resonance is insensitive to subhaloes up to $M\sim10^6$ M$_{\odot}$. Changing the bar properties has interesting implications. A faster rotating, longer, or weaker strength bar makes the resonances more sensitive to lower mass subhaloes, and thus makes the co-rotation resonance a better subhalo detector. The likely evolution (i.e. slowing down) of the bar makes this much more complicated, and we will explore it in future work. 
+
+
+\section{Conclusions}\label{sec:summary}
+
+In this section we first summarise the work presented in this paper and then discuss future work that will follow this paper and further test the idea.
+
+\begin{figure}
+\centering
+
+\begin{minipage}[t]{0.45\textwidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,baseline=(bb.south)]
+  % --- FIX 1: identical bounding box for both plots ---
+  \path[use as bounding box] (0,0) rectangle (7,6);
+  \coordinate (bb) at (0,0);
+
+  % axes
+  \draw[->] (0,0) -- (0,6);
+  \draw[->] (0,0) -- (7,0);
+  \node[black, rotate=90, font=\large] at (-0.4, 3.5) {Energy};
+
+  % resonance bars (rectangles centered on the lines)
+  \fill[gray!30] (2,0.75) rectangle (6,1.25);  % CR
+  \fill[gray!30] (2,2.80) rectangle (6,3.20);  % ILR
+  \fill[gray!30] (2,3.85) rectangle (6,4.15);  % OLR
+  \fill[gray!30] (2,4.40) rectangle (6,4.60);  % UH1
+  \fill[gray!30] (2,4.68) rectangle (6,4.82);  % UH2
+
+  % --- FIX 2: put labels at the right edge, inside the bbox ---
+  \node[anchor=west] at (6,1.00) {CR};
+  \node[anchor=west] at (6,3.00) {OLR};
+  \node[anchor=west] at (6,4.00) {$n_r\geq2$};
+
+  % --- FIX 3: dashed guide spans exactly the bbox width ---
+  \draw[dashed] (0,5) -- (7,5);
+
+  \draw[->, red, ultra thick] (3,0.85) -- (3,3.0);
+  \draw[->, red, ultra thick] (4,0.85) -- (4,1.2);
+  \draw[->, red, ultra thick] (5,0.85) -- (5,3.6);
+  \draw[<->, black, thin] (1.85,0.75) -- (1.85,1.25);
+
+  % annotation
+  \node[red,left] at (2.8,2.0) {Subhalo impact, $\Delta I_{\rm sh}$};
+  \node[black,left] at (1.8,1.0) {$\Delta I_{\rm half}$};
+\end{tikzpicture}
+\end{minipage}
+
+\caption{Schematic diagrams for the impact of a subhalo fly-by on a star in resonance with the Galactic bar. A subhalo may cause a star in co-rotation resonance to escape beyond the separatrix, get trapped by another resonance, or remain in co-rotation. The bath of subhaloes may deplete the co-rotation resonance (CR) and populate higher-order resonances. Higher order resonances have narrower half widths, and so are diffused away easier by the same subhalo perturbation. }
+\label{fig:atom}
+\end{figure}
+
+
+\subsection{Summary}
+
+In this work, we introduce and discuss the usage of bar-induced resonances in the Galaxy as a tool for detecting low-mass dark matter subhaloes with the ultimate aim of constraining the subhalo mass function. As a first proof-of-concept, we take a simple approach to analytically estimate the impact of the Galactic subhalo population on bar-induced resonant features in the Milky Way. Namely, we treat every individual subhalo encounter as an impulse, and aggregate their behaviour as a diffusive process. From these assumptions, we obtain an expression for the diffusion coefficient, the diffusion timescale and other related paramters. The problem simplifies down to a questions of whether a certain population of subhaloes changes the slow action $I$ of a resonant star enough to exceed the half-width $\Delta I_{\rm half}$ of the resonance. Consideration of timescales makes the question more intuitive. Namely, it enables us to formulate the problem as a comparison between the timescale of diffusion and the lifetime of the the bar resonances. The existence or non-existence of resonant features in the Galaxy provide constraints on the subhalo population. The analytical work is complemented by basic test particle simulations that act both as a visual aid, and are used to understand the limitations of our analytical model.
+
+Using the subhalo diffusion coefficient, we find that (for CDM) the co-rotation resonance is insensitive to subhaloes below $M<10^6$ M$_{\odot}$, slightly heated by the cumulative subhaloes up to $M~\sim~10^7$~M$_{\odot}$, and likely dissipated when accounting for subhaloes up to $M~\sim~10^8$~M$_{\odot}$. By instead comparing the timescales of diffusion with the age of the bar (as a proxy for the lifetime of the resonance), we similarly predict that the CDM predicted subhalo mass function should have dissipated the co-rotation resonance away. This is remedied if we assume that the density of subhaloes at the co-rotation resonance is 1/5 that predicted by CDM \citep[][]{springel2008aquarius}. This suppression to the local density corroborates other studies that assume a suppression of this amount at the local volume as a result of tidal stripping \citep[e.g.][]{d'onghia2009substructure, erkal2016number}.
+
+Varying the bar properties impacts the sensitivity of the co-rotation resonance to subhalo perturbations through changes in the width of the resonance in slow action space. Specifically, (a) increasing the pattern speed increases the resonance half-width, (b) increasing the bar length decreases the resonance width, and (c) increasing the bar strength increases the width. 
+
+We summarise the framework presented in this work by comparison to the atomic model, where resonances are analogous to energy levels (with some intrinsic width), and subhaloes are equivalent to photons which can induce transitions. Fig.~\ref{fig:atom} presents this comparison as a schematic. The exact analogy breaks down in a few ways (notably that subhalo impacts are not quantized), but we believe this paints a comprehensible picture that nicely summarises the idea.
+
+\subsection{Future Work}
+
+As this work serves primarily as an introduction to this framework and a proof of concept, there is considerable scope for further development. Broadly, promising extensions fall into three categories.
+
+First, the analytic framework can be expanded in several ways. A natural next step is to incorporate more complex time-dependent bar evolution, including secular bar slow-down, to capture more realistic Galactic evolution. The formalism can also be extended to higher-order resonances beyond co-rotation, which may act as more sensitive probes of low-mass subhalo perturbations. In addition, relaxing the assumption of purely impulsive encounters (by including adiabatic corrections and terms describing resonant coupling between subhaloes and the bar) will enable a more complete treatment of subhalo interactions. Finally, extending the present analysis from planar orbits to full three-dimensional phase space, including eccentric halo orbits and vertical structure, will allow us to probe more interesting and relevant scenarios.
+
+Second, more advanced numerical simulations will play a key role in testing and refining this framework. In particular, tools such as \textit{StreamSculptor} \citep[][]{nibauer2025streamsculptor} offer a path toward modelling the response of a test-particle to a realistic population of subhaloes instead of a single subhalo. Beyond this, moving away from idealised test-particle experiments toward cosmological simulations will make it possible to apply and evaluate the method in environments that capture the full complexity of galaxy formation and evolution.
+
+Third, observational studies will be essential to test these predictions. A clear target is to search for signatures of higher-order resonances (such as ultraharmonics and beyond) in stellar phase-space data. Additionally, identifying overpopulations or underpopulations at specific resonances relative to smooth dynamical expectations may provide the first empirical evidence of subhalo-driven diffusion in the Milky Way.
+
+\section*{Acknowledgements}
+
+EYD thanks Shaunak Modak and Nathaniel Starkmann specifically for very useful conversation, as well as the Cosmic Codebreakers group at MKI and the Streams group at Cambridge for useful feedback.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Data Availability}
+
+The work in this project can be reproduced with publicly available software.
+
+%%%%%%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%%%%
+
+% The best way to enter references is to use BibTeX:
+
+\bibliographystyle{mnras}
+\bibliography{resonance_subhalo} % if your bibtex file is called example.bib
+
+
+% Alternatively you could enter them by hand, like this:
+% This method is tedious and prone to error if you have lots of references
+%\begin{thebibliography}{99}
+%\bibitem[\protect\citeauthoryear{Author}{2012}]{Author2012}
+%Author A.~N., 2013, Journal of Improbable Astronomy, 1, 1
+%\bibitem[\protect\citeauthoryear{Others}{2013}]{Others2013}
+%Others S., 2012, Journal of Interesting Stuff, 17, 198
+%\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%% APPENDICES %%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\section{Hernquist subhalo potential}
+
+In this appendix we show the result of replacing the Plummer potential with the Hernquist potential \citep[][]{hernquist1990analytical} in the calculation of the diffusion coefficient $D_{\rm II}$. The form of the potential for a Plummer sphere is
+%
+\begin{equation}
+    \Phi_{\rm H}(r) = -\frac{GM}{r + r_{\rm s}},
+\end{equation}
+
+where the scale radius can be related to the mass by \citep[][]{erkal2016number}
+%
+\begin{equation}
+    r_{\rm s}(M) = 1.05 {\,\rm kpc} \left(\frac{M}{10^8 {\rm M}_{\odot}}\right)^{1/2}.
+\end{equation}
+%
+The result of making this change is just a change to the value of $\kappa$ to $\kappa = 1.05^2 \times 10^{-8}$, which ultimately gives a value of $\mathcal{B}_0 = 28.02$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\columnwidth]{figures/subhalo_type_compare.pdf}
+    \caption{A comparison of the diffusion coefficient between a Hernquist potential and a Plummer potential. The top panel shows the diffusion coefficient itself, and the bottom panel shows the difference between the two cases. It is evident that the difference is minimal.}
+    \label{fig:subhalo_type_compare}
+\end{figure}
+
+\section{Subhalo velocity distribution in star's rest frame}\label{appendix:velocity}
+
+\section{Subhalo impact parameter distribution in star's rest frame}\label{appendix:impact}
+
+Because the Fisher distribution is infrequently used in astronomy, we mention some important details here.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Don't change these lines
+\bsp	% typesetting comment
+\label{lastpage}
+\end{document}
+
+% End of mnras_template.tex
